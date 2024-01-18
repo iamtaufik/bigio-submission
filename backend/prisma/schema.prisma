@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Category {
+  Technology
+  Financial
+  Health
+}
+
+enum Status {
+  Draft
+  Published
+}
+
+enum Tags {
+  Best
+  Short
+  Mental_illness
+}
+
+model Story {
+  id        Int      @id @default(autoincrement())
+  title     String
+  synopsis   String
+  writer    String
+  category  Category
+  tags      Tags[]
+  image     String?
+  status    Status
+  chapters  Chapter[]  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Chapter {
+  id       Int      @id @default(autoincrement())
+  title    String
+  content  String
+  story    Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  storyId  Int  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt  
+}
