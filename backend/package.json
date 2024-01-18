@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon app.js",
     "start": "node app.js",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "test": "jest --watchAll --verbose --detectOpenHandles"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +21,8 @@
     "prisma": "^5.8.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.3"
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.3",
+    "supertest": "^6.3.4"
   }
 }
