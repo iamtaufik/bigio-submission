@@ -10,9 +10,9 @@ import EditStory from './pages/EditStory.tsx';
 import DetailStory from './pages/DetailStory.tsx';
 import axios from 'axios';
 import Management from './pages/Management.tsx';
+import NotFound from './pages/NotFound.tsx';
 
 axios.defaults.baseURL = import.meta.env.VITE_API_ENDPOINT;
-const NotFound = () => <div>404</div>;
 
 const router = createBrowserRouter([
   {
@@ -21,46 +21,32 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       {
-        index: true,
+        path: '/',
         element: <StoryLists />,
       },
       {
-        path: 'management',
-        children: [
-          {
-            index: true,
-            element: <Management />,
-          },
-          {
-            path: 'add-story',
-            children: [
-              {
-                index: true,
-                element: <AddStory />,
-              },
-              {
-                path: 'chapter',
-                children: [
-                  {
-                    index: true,
-                    element: <AddChapter />,
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            path: 'edit-story/:storyId',
-            element: <EditStory />,
-          },
-          {
-            path: 'detail-story/:storyId',
-            element: <DetailStory />,
-          },
-        ],
+        path: '/management',
+        element: <Management />,
       },
+      {
+        path: '/management/add-story',
+        element: <AddStory />,
+      },
+      {
+        path: '/management/edit-story/:storyId',
+        element: <EditStory />,
+      },
+      {
+        path: '/management/detail-story/:storyId',
+        element: <DetailStory />,
+      },
+      {
+        path: '/management/add-story/chapter',
+        element: <AddChapter />,
+      }
     ],
   },
+  
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
