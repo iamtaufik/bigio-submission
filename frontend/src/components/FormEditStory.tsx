@@ -26,9 +26,9 @@ const FormEditStory = () => {
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const { storyId } = useParams();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSelectTags = (tg: string) => {
-
     if (tag.includes(tg)) {
       setTag((prev) => prev.filter((t) => t !== tg));
     } else {
@@ -58,6 +58,7 @@ const FormEditStory = () => {
 
   const handleEditStory = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
+      setIsLoading(true);
       e.preventDefault();
       await axios.put(`/stories/${storyId}`, {
         title,
@@ -76,6 +77,8 @@ const FormEditStory = () => {
         toast.error(error.response?.data.message);
       }
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -213,8 +216,8 @@ const FormEditStory = () => {
         </div>
       </div>
       <div className="flex justify-end gap-8">
-        <Button className=" bg-slate-200" text="Cancel" onClick={() => navigate("/management")}/>
-        <Button className="text-white bg-blue-700 hover:bg-blue-800" text="Save" type="submit" />
+        <Button className=" bg-slate-200" text="Cancel" onClick={() => navigate('/management')} />
+        <Button disabled={isLoading} className="text-white bg-blue-700 hover:bg-blue-800" text="Save" type="submit" />
       </div>
     </form>
   );
