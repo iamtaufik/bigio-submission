@@ -1,11 +1,10 @@
-interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
-  type?: 'button' | 'submit' | 'reset';
 }
 
-const Button = ({ text, className, type = 'button', ...props }: ButtonProps) => {
+const Button = ({ text, className, type = 'button', disabled, ...props }: ButtonProps) => {
   return (
-    <button type={type} className={`px-4 py-2 rounded-md ${className}`} {...props}>
+    <button type={type} disabled={disabled} className={`px-4 py-2 rounded-md ${className}`} {...props}>
       {text}
     </button>
   );

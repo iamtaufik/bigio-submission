@@ -7,6 +7,7 @@ import Badge from './Badge';
 import { useDebounce } from 'use-debounce';
 import { ShowModal } from './ModalFilter';
 import { useFilterStore } from '../store/useFilter';
+import Loading from './Loading';
 
 type Story = {
   id: number;
@@ -23,9 +24,11 @@ const StoryLists = () => {
   const { filter, setFilter } = useFilterStore();
   const [search, setSearch] = useState('');
   const [debounceValue] = useDebounce(search, 1000);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getStories = async () => {
     try {
+      setIsLoading(true);
       if ((filter.category !== '' || filter.status !== '') && search === '') {
         const { data } = await axios.get(`/stories?category=${filter.category}&status=${filter.status}`);
         setStories(data.data as Story[]);
@@ -44,6 +47,8 @@ const StoryLists = () => {
         toast.error(error.response?.data.message);
       }
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -98,50 +103,54 @@ const StoryLists = () => {
         </div>
       </div>
       <div>
-        <table className="w-full border-2 table-auto">
-          <thead>
-            <tr className="">
-              <th className="py-2 border-2">Title</th>
-              <th className="py-2 border-2">Writers</th>
-              <th className="py-2 border-2">Category</th>
-              <th className="py-2 border-2">Tags</th>
-              <th className="py-2 border-2">Status</th>
-              <th className="py-2 border-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {stories.map((story) => {
-              return (
-                <tr className="text-center " key={story.id}>
-                  <td className="py-2 border-2">{story.title}</td>
-                  <td className="py-2 border-2">{story.writer}</td>
-                  <td className="py-2 border-2">{story.category}</td>
-                  <td className="py-2 border-2 ">
-                    <div className="flex items-center justify-center gap-2">
-                      {story.tags.map((tag, index) => {
-                        return <Badge key={index} text={tag} color="dark" />;
-                      })}
-                    </div>
-                  </td>
-                  <td className="py-2 border-2 ">
-                    <div className="flex justify-center">
-                      <Badge text={story.status} color="light" />
-                    </div>
-                  </td>
-                  <td className="py-2 border-2">
-                    <div className="flex justify-around">
-                      <div className="px-4 py-2 text-white bg-blue-500 cursor-pointer rounded-2xl">
-                        <Link to={`/management/detail-story/${story.id}`}>
-                          <span>Detail</span>
-                        </Link>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <table className="w-full border-2 table-auto">
+            <thead>
+              <tr className="">
+                <th className="py-2 border-2">Title</th>
+                <th className="py-2 border-2">Writers</th>
+                <th className="py-2 border-2">Category</th>
+                <th className="py-2 border-2">Tags</th>
+                <th className="py-2 border-2">Status</th>
+                <th className="py-2 border-2">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {stories.map((story) => {
+                return (
+                  <tr className="text-center " key={story.id}>
+                    <td className="py-2 border-2">{story.title}</td>
+                    <td className="py-2 border-2">{story.writer}</td>
+                    <td className="py-2 border-2">{story.category}</td>
+                    <td className="py-2 border-2 ">
+                      <div className="flex items-center justify-center gap-2">
+                        {story.tags.map((tag, index) => {
+                          return <Badge key={index} text={tag} color="dark" />;
+                        })}
                       </div>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                    </td>
+                    <td className="py-2 border-2 ">
+                      <div className="flex justify-center">
+                        <Badge text={story.status} color="light" />
+                      </div>
+                    </td>
+                    <td className="py-2 border-2">
+                      <div className="flex justify-around">
+                        <div className="px-4 py-2 text-white bg-blue-500 cursor-pointer rounded-2xl">
+                          <Link to={`/management/detail-story/${story.id}`}>
+                            <span>Detail</span>
+                          </Link>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
       </div>
     </>
   );

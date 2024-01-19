@@ -20,10 +20,10 @@ const FormCreateStory = () => {
   const [tag, setTag] = useState<string[]>(story.tags);
   const [image, setImage] = useState(story.image);
   const [status, setStatus] = useState(story.status);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSelectTags = (tg: string) => {
-    console.log('select tags', tg);
     // remove tag if has included
     if (tag.includes(tg)) {
       setTag((prev) => prev.filter((t) => t !== tg));
@@ -34,7 +34,7 @@ const FormCreateStory = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
-      console.log(tag);
+      setIsLoading(true);
       e.preventDefault();
       await axios.post('/stories', {
         title,
@@ -59,6 +59,8 @@ const FormCreateStory = () => {
         toast.error(error.response?.data.message);
       }
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -213,8 +215,8 @@ const FormCreateStory = () => {
         </div>
       </div>
       <div className="flex justify-end gap-8">
-        <Button className=" bg-slate-200" text="Cancel" onClick={() => navigate("/management")}/>
-        <Button className="text-white bg-blue-700 hover:bg-blue-800" text="Save" type="submit" />
+        <Button className=" bg-slate-200" text="Cancel" onClick={() => navigate('/management')} />
+        <Button disabled={isLoading} className={`text-white bg-blue-700 hover:bg-blue-800 `} text="Save" type="submit" />
       </div>
     </form>
   );
